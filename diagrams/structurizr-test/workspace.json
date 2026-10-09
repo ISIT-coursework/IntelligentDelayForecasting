@@ -1,0 +1,248 @@
+{
+  "configuration" : { },
+  "description" : "Тестовые C4-диаграммы системы прогнозирования задержек доставки.",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2026-10-01T18:42:44Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Проверяет прогнозы задержек и планирует доставки.",
+      "id" : "1",
+      "name" : "Диспетчер",
+      "properties" : {
+        "structurizr.dsl.identifier" : "dispatcher"
+      },
+      "relationships" : [ {
+        "description" : "Просматривает прогнозы",
+        "destinationId" : "3",
+        "id" : "8",
+        "sourceId" : "1",
+        "tags" : "Relationship",
+        "technology" : "HTTPS"
+      }, {
+        "description" : "Просматривает прогнозы",
+        "destinationId" : "2",
+        "id" : "9",
+        "linkedRelationshipId" : "8",
+        "sourceId" : "1",
+        "technology" : "HTTPS"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "containers" : [ {
+        "description" : "Показывает доставки и прогнозы задержек.",
+        "documentation" : { },
+        "id" : "3",
+        "name" : "Веб-интерфейс",
+        "properties" : {
+          "structurizr.dsl.identifier" : "web"
+        },
+        "relationships" : [ {
+          "description" : "Запрашивает доставки и прогнозы",
+          "destinationId" : "4",
+          "id" : "10",
+          "sourceId" : "3",
+          "tags" : "Relationship",
+          "technology" : "JSON/HTTPS"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Web application"
+      }, {
+        "description" : "Принимает данные доставки и возвращает прогноз.",
+        "documentation" : { },
+        "id" : "4",
+        "name" : "API",
+        "properties" : {
+          "structurizr.dsl.identifier" : "api"
+        },
+        "relationships" : [ {
+          "description" : "Читает и сохраняет данные",
+          "destinationId" : "6",
+          "id" : "13",
+          "sourceId" : "4",
+          "tags" : "Relationship",
+          "technology" : "SQL"
+        }, {
+          "description" : "Запрашивает прогноз",
+          "destinationId" : "5",
+          "id" : "14",
+          "sourceId" : "4",
+          "tags" : "Relationship",
+          "technology" : "JSON/HTTP"
+        } ],
+        "tags" : "Element,Container",
+        "technology" : "Go"
+      }, {
+        "description" : "Рассчитывает прогноз по признакам доставки.",
+        "documentation" : { },
+        "id" : "5",
+        "name" : "Модель прогнозирования",
+        "properties" : {
+          "structurizr.dsl.identifier" : "predictor"
+        },
+        "tags" : "Element,Container",
+        "technology" : "Python"
+      }, {
+        "description" : "Хранит доставки, историю и результаты прогнозов.",
+        "documentation" : { },
+        "id" : "6",
+        "name" : "База данных",
+        "properties" : {
+          "structurizr.dsl.identifier" : "database"
+        },
+        "tags" : "Element,Container,Database",
+        "technology" : "PostgreSQL"
+      } ],
+      "description" : "Оценивает риск и ожидаемую длительность задержки доставки.",
+      "documentation" : { },
+      "id" : "2",
+      "name" : "Прогнозирование задержек",
+      "properties" : {
+        "structurizr.dsl.identifier" : "forecasting"
+      },
+      "tags" : "Element,Software System"
+    }, {
+      "description" : "Источник статусов и плановых сроков доставки.",
+      "documentation" : { },
+      "id" : "7",
+      "name" : "Транспортная система",
+      "properties" : {
+        "structurizr.dsl.identifier" : "transport"
+      },
+      "relationships" : [ {
+        "description" : "Передаёт статусы доставок",
+        "destinationId" : "4",
+        "id" : "11",
+        "sourceId" : "7",
+        "tags" : "Relationship",
+        "technology" : "JSON/HTTPS"
+      }, {
+        "description" : "Передаёт статусы доставок",
+        "destinationId" : "2",
+        "id" : "12",
+        "linkedRelationshipId" : "11",
+        "sourceId" : "7",
+        "technology" : "JSON/HTTPS"
+      } ],
+      "tags" : "Element,Software System,External"
+    } ]
+  },
+  "name" : "Intelligent Delay Forecasting — test",
+  "properties" : {
+    "structurizr.inspection.error" : "3",
+    "structurizr.dsl" : "d29ya3NwYWNlICJJbnRlbGxpZ2VudCBEZWxheSBGb3JlY2FzdGluZyDigJQgdGVzdCIgItCi0LXRgdGC0L7QstGL0LUgQzQt0LTQuNCw0LPRgNCw0LzQvNGLINGB0LjRgdGC0LXQvNGLINC/0YDQvtCz0L3QvtC30LjRgNC+0LLQsNC90LjRjyDQt9Cw0LTQtdGA0LbQtdC6INC00L7RgdGC0LDQstC60LguIiB7CiAgICBtb2RlbCB7CiAgICAgICAgZGlzcGF0Y2hlciA9IHBlcnNvbiAi0JTQuNGB0L/QtdGC0YfQtdGAIiAi0J/RgNC+0LLQtdGA0Y/QtdGCINC/0YDQvtCz0L3QvtC30Ysg0LfQsNC00LXRgNC20LXQuiDQuCDQv9C70LDQvdC40YDRg9C10YIg0LTQvtGB0YLQsNCy0LrQuC4iCgogICAgICAgIGZvcmVjYXN0aW5nID0gc29mdHdhcmVTeXN0ZW0gItCf0YDQvtCz0L3QvtC30LjRgNC+0LLQsNC90LjQtSDQt9Cw0LTQtdGA0LbQtdC6IiAi0J7RhtC10L3QuNCy0LDQtdGCINGA0LjRgdC6INC4INC+0LbQuNC00LDQtdC80YPRjiDQtNC70LjRgtC10LvRjNC90L7RgdGC0Ywg0LfQsNC00LXRgNC20LrQuCDQtNC+0YHRgtCw0LLQutC4LiIgewogICAgICAgICAgICB3ZWIgPSBjb250YWluZXIgItCS0LXQsS3QuNC90YLQtdGA0YTQtdC50YEiICLQn9C+0LrQsNC30YvQstCw0LXRgiDQtNC+0YHRgtCw0LLQutC4INC4INC/0YDQvtCz0L3QvtC30Ysg0LfQsNC00LXRgNC20LXQui4iICJXZWIgYXBwbGljYXRpb24iCiAgICAgICAgICAgIGFwaSA9IGNvbnRhaW5lciAiQVBJIiAi0J/RgNC40L3QuNC80LDQtdGCINC00LDQvdC90YvQtSDQtNC+0YHRgtCw0LLQutC4INC4INCy0L7Qt9Cy0YDQsNGJ0LDQtdGCINC/0YDQvtCz0L3QvtC3LiIgIkdvIgogICAgICAgICAgICBwcmVkaWN0b3IgPSBjb250YWluZXIgItCc0L7QtNC10LvRjCDQv9GA0L7Qs9C90L7Qt9C40YDQvtCy0LDQvdC40Y8iICLQoNCw0YHRgdGH0LjRgtGL0LLQsNC10YIg0L/RgNC+0LPQvdC+0Lcg0L/QviDQv9GA0LjQt9C90LDQutCw0Lwg0LTQvtGB0YLQsNCy0LrQuC4iICJQeXRob24iCiAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICLQkdCw0LfQsCDQtNCw0L3QvdGL0YUiICLQpdGA0LDQvdC40YIg0LTQvtGB0YLQsNCy0LrQuCwg0LjRgdGC0L7RgNC40Y4g0Lgg0YDQtdC30YPQu9GM0YLQsNGC0Ysg0L/RgNC+0LPQvdC+0LfQvtCyLiIgIlBvc3RncmVTUUwiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIgogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICB0cmFuc3BvcnQgPSBzb2Z0d2FyZVN5c3RlbSAi0KLRgNCw0L3RgdC/0L7RgNGC0L3QsNGPINGB0LjRgdGC0LXQvNCwIiAi0JjRgdGC0L7Rh9C90LjQuiDRgdGC0LDRgtGD0YHQvtCyINC4INC/0LvQsNC90L7QstGL0YUg0YHRgNC+0LrQvtCyINC00L7RgdGC0LDQstC60LguIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIgogICAgICAgIH0KCiAgICAgICAgZGlzcGF0Y2hlciAtPiB3ZWIgItCf0YDQvtGB0LzQsNGC0YDQuNCy0LDQtdGCINC/0YDQvtCz0L3QvtC30YsiICJIVFRQUyIKICAgICAgICB3ZWIgLT4gYXBpICLQl9Cw0L/RgNCw0YjQuNCy0LDQtdGCINC00L7RgdGC0LDQstC60Lgg0Lgg0L/RgNC+0LPQvdC+0LfRiyIgIkpTT04vSFRUUFMiCiAgICAgICAgdHJhbnNwb3J0IC0+IGFwaSAi0J/QtdGA0LXQtNCw0ZHRgiDRgdGC0LDRgtGD0YHRiyDQtNC+0YHRgtCw0LLQvtC6IiAiSlNPTi9IVFRQUyIKICAgICAgICBhcGkgLT4gZGF0YWJhc2UgItCn0LjRgtCw0LXRgiDQuCDRgdC+0YXRgNCw0L3Rj9C10YIg0LTQsNC90L3Ri9C1IiAiU1FMIgogICAgICAgIGFwaSAtPiBwcmVkaWN0b3IgItCX0LDQv9GA0LDRiNC40LLQsNC10YIg0L/RgNC+0LPQvdC+0LciICJKU09OL0hUVFAiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgZm9yZWNhc3RpbmcgIlN5c3RlbUNvbnRleHQiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9MYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciBmb3JlY2FzdGluZyAiQ29udGFpbmVycyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b0xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiRWxlbWVudCIgewogICAgICAgICAgICAgICAgY29sb3IgI2ZmZmZmZgogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIlBlcnNvbiIgewogICAgICAgICAgICAgICAgc2hhcGUgUGVyc29uCiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMwODQyN2IKICAgICAgICAgICAgfQogICAgICAgICAgICBlbGVtZW50ICJTb2Z0d2FyZSBTeXN0ZW0iIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzExNjhiZAogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkNvbnRhaW5lciIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjNDM4ZGQ1CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRGF0YWJhc2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIEN5bGluZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiRXh0ZXJuYWwiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzY2NjY2NgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
+  },
+  "views" : {
+    "configuration" : {
+      "styles" : {
+        "elements" : [ {
+          "background" : "#438dd5",
+          "tag" : "Container"
+        }, {
+          "shape" : "Cylinder",
+          "tag" : "Database"
+        }, {
+          "color" : "#ffffff",
+          "tag" : "Element"
+        }, {
+          "background" : "#666666",
+          "tag" : "External"
+        }, {
+          "background" : "#08427b",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#1168bd",
+          "tag" : "Software System"
+        } ]
+      },
+      "terminology" : { }
+    },
+    "containerViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalSoftwareSystemBoundariesVisible" : false,
+      "key" : "Containers",
+      "name" : "Container View: Прогнозирование задержек",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "10"
+      }, {
+        "id" : "11"
+      }, {
+        "id" : "13"
+      }, {
+        "id" : "14"
+      }, {
+        "id" : "8"
+      } ],
+      "softwareSystemId" : "2"
+    } ],
+    "systemContextViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Прогнозирование задержек",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "12"
+      }, {
+        "id" : "9"
+      } ],
+      "softwareSystemId" : "2"
+    } ]
+  }
+}
