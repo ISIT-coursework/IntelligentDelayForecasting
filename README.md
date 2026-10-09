@@ -54,6 +54,21 @@ diagrams/
 Workflow `.github/workflows/diagrams.yml` запускается при создании и обновлении
 Pull Request в `main`, при push в `main` и вручную через `workflow_dispatch`.
 
+Каждый этап выполняется отдельным шагом, поэтому в логах GitHub Actions видно,
+на какой проверке остановилась сборка:
+
+| Этап | Локальная команда | Назначение |
+| --- | --- | --- |
+| Тесты проверки правил | `make diagrams-test` | Проверить работу валидатора модели |
+| Валидация DSL | `make diagrams-validate` | Проверить синтаксис, подключённые файлы и ссылки |
+| Экспорт JSON | `make diagrams-export-json` | Собрать общую модель для проверки |
+| Проверка модели | `make diagrams-check-rules` | Проверить технологии, связи и обязательные представления |
+| Экспорт HTML | `make diagrams-export-html` | Создать документацию для просмотра |
+| Сохранение артефактов | Шаг `Upload architecture documentation` | Сохранить JSON и HTML в GitHub Actions |
+
+Этапы выполняются сверху вниз. При ошибке следующие шаги не запускаются.
+Для отдельного запуска `diagrams-check-rules` сначала нужен экспорт JSON.
+
 Сборка проверяет синтаксис и ссылки DSL, экспортирует модель в JSON и проверяет:
 
 - технологии контейнеров и компонентов;
@@ -70,10 +85,12 @@ Pull Request в `main`, при push в `main` и вручную через `work
 ```sh
 make diagrams-check
 make diagrams-render
-python3 -m unittest discover -s scripts -p 'test_*.py'
+make diagrams-test
 ```
 
-`diagrams-render` включает проверку модели. Результаты находятся в
+`diagrams-check` последовательно выполняет валидацию DSL, экспорт JSON и проверку
+правил модели. `diagrams-render` включает эти этапы и экспорт HTML; тесты валидатора
+запускаются отдельно командой `diagrams-test`. Результаты находятся в
 `build/diagrams/model/workspace.json` и `build/diagrams/site/` и исключены из Git.
 Исходный `workspace.json` и служебные файлы `.structurizr/` не обновляются этими командами.
 

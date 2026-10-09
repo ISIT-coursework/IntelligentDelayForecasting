@@ -12,6 +12,7 @@ DIAGRAM_DOCKER = docker run --rm --pull=$(DIAGRAM_PULL_POLICY) --network=none \
 	-v "$(abspath $(DIAGRAM_OUTPUT)):/output" $(DIAGRAM_IMAGE)
 
 .PHONY: run stop diagrams-check diagrams-render
+.PHONY: diagrams-test diagrams-validate diagrams-export-json diagrams-check-rules diagrams-export-html
 
 run:
 	@test -f "$(WORKSPACE_DIR)/workspace.dsl" || { echo "Missing $(WORKSPACE_DIR)/workspace.dsl"; exit 1; }
@@ -22,15 +23,31 @@ run:
 stop:
 	-docker stop structurizr
 
-diagrams-check:
+diagrams-test:
+	$(PYTHON) -m unittest discover -s scripts -p 'test_*.py'
+
+diagrams-validate:
 	@test -f "$(WORKSPACE_DIR)/workspace.dsl" || { echo "Missing $(WORKSPACE_DIR)/workspace.dsl"; exit 1; }
-	mkdir -p "$(DIAGRAM_OUTPUT)/model"
+	mkdir -p "$(DIAGRAM_OUTPUT)"
 	$(DIAGRAM_DOCKER) validate -w /workspace/workspace.dsl
+
+diagrams-export-json:
+	mkdir -p "$(DIAGRAM_OUTPUT)/model"
 	$(DIAGRAM_DOCKER) export -w /workspace/workspace.dsl -f json -o /output/model
+
+diagrams-check-rules:
 	$(PYTHON) scripts/check_diagrams.py "$(DIAGRAM_OUTPUT)/model/workspace.json"
 
-diagrams-render: diagrams-check
+diagrams-export-html:
 	mkdir -p "$(DIAGRAM_OUTPUT)/site"
 	$(DIAGRAM_DOCKER) export -w /workspace/workspace.dsl -f static -o /output/site
 	@test -s "$(DIAGRAM_OUTPUT)/site/index.html"
 	@test -s "$(DIAGRAM_OUTPUT)/site/workspace.js"
+
+diagrams-check:
+	$(MAKE) diagrams-validate
+	$(MAKE) diagrams-export-json
+	$(MAKE) diagrams-check-rules
+
+diagrams-render: diagrams-check
+	$(MAKE) diagrams-export-html

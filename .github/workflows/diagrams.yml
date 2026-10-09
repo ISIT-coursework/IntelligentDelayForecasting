@@ -26,10 +26,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Test architecture rules
-        run: python3 -m unittest discover -s scripts -p 'test_*.py'
+        run: make diagrams-test
 
-      - name: Validate model and export HTML documentation
-        run: make diagrams-render
+      - name: Validate Structurizr DSL
+        run: make diagrams-validate
+
+      - name: Export JSON model
+        run: make diagrams-export-json
+
+      - name: Check architecture rules
+        run: make diagrams-check-rules
+
+      - name: Export HTML documentation
+        run: make diagrams-export-html
 
       - name: Upload architecture documentation
         uses: actions/upload-artifact@v4
