@@ -15,7 +15,18 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  diagrams:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Test architecture rules
+        run: make diagrams-test
+
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -25,17 +36,54 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Test architecture rules
-        run: make diagrams-test
-
       - name: Validate Structurizr DSL
         run: make diagrams-validate
 
       - name: Export JSON model
         run: make diagrams-export-json
 
+      - name: Upload model for downstream jobs
+        uses: actions/upload-artifact@v4
+        with:
+          name: structurizr-model
+          path: build/diagrams/model/workspace.json
+          if-no-files-found: error
+          retention-days: 1
+
+  check-model:
+    needs: [tests, validate]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download model
+        uses: actions/download-artifact@v4
+        with:
+          name: structurizr-model
+          path: build/diagrams/model
+
       - name: Check architecture rules
         run: make diagrams-check-rules
+
+  documentation:
+    needs: check-model
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DIAGRAM_PULL_POLICY: missing
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download validated model
+        uses: actions/download-artifact@v4
+        with:
+          name: structurizr-model
+          path: build/diagrams/model
 
       - name: Export HTML documentation
         run: make diagrams-export-html

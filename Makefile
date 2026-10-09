@@ -39,8 +39,9 @@ diagrams-check-rules:
 	$(PYTHON) scripts/check_diagrams.py "$(DIAGRAM_OUTPUT)/model/workspace.json"
 
 diagrams-export-html:
+	@test -s "$(DIAGRAM_OUTPUT)/model/workspace.json" || { echo "Missing JSON model: run make diagrams-export-json first"; exit 1; }
 	mkdir -p "$(DIAGRAM_OUTPUT)/site"
-	$(DIAGRAM_DOCKER) export -w /workspace/workspace.dsl -f static -o /output/site
+	$(DIAGRAM_DOCKER) export -w /output/model/workspace.json -f static -o /output/site
 	@test -s "$(DIAGRAM_OUTPUT)/site/index.html"
 	@test -s "$(DIAGRAM_OUTPUT)/site/workspace.js"
 

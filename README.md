@@ -54,20 +54,24 @@ diagrams/
 Workflow `.github/workflows/diagrams.yml` запускается при создании и обновлении
 Pull Request в `main`, при push в `main` и вручную через `workflow_dispatch`.
 
-Каждый этап выполняется отдельным шагом, поэтому в логах GitHub Actions видно,
-на какой проверке остановилась сборка:
+Workflow разделён на четыре самостоятельных jobs, отображаемых отдельными
+стадиями в GitHub Actions:
 
-| Этап | Локальная команда | Назначение |
+| Стадия | Зависимости (`needs`) | Назначение |
 | --- | --- | --- |
-| Тесты проверки правил | `make diagrams-test` | Проверить работу валидатора модели |
-| Валидация DSL | `make diagrams-validate` | Проверить синтаксис, подключённые файлы и ссылки |
-| Экспорт JSON | `make diagrams-export-json` | Собрать общую модель для проверки |
-| Проверка модели | `make diagrams-check-rules` | Проверить технологии, связи и обязательные представления |
-| Экспорт HTML | `make diagrams-export-html` | Создать документацию для просмотра |
-| Сохранение артефактов | Шаг `Upload architecture documentation` | Сохранить JSON и HTML в GitHub Actions |
+| `tests` | — | Тесты валидатора: `make diagrams-test` |
+| `validate` | — | Валидация DSL и экспорт JSON: `make diagrams-validate`, `make diagrams-export-json` |
+| `check-model` | `tests`, `validate` | Проверка технологий, связей и обязательных представлений: `make diagrams-check-rules` |
+| `documentation` | `check-model` | Экспорт HTML: `make diagrams-export-html`, сохранение итоговых артефактов |
 
-Этапы выполняются сверху вниз. При ошибке следующие шаги не запускаются.
-Для отдельного запуска `diagrams-check-rules` сначала нужен экспорт JSON.
+`tests` и `validate` запускаются параллельно. Остальные стадии ожидают успешного
+завершения своих зависимостей. При ошибке зависимые jobs не запускаются.
+
+Каждая стадия выполняется на отдельном runner. `validate` сохраняет JSON-модель
+в промежуточном артефакте `structurizr-model` на один день; `check-model` и
+`documentation` скачивают её. HTML создаётся из этой же проверенной JSON-модели.
+Для отдельного локального запуска `diagrams-check-rules` или
+`diagrams-export-html` сначала нужен экспорт JSON.
 
 Сборка проверяет синтаксис и ссылки DSL, экспортирует модель в JSON и проверяет:
 
@@ -109,4 +113,5 @@ make diagrams-render WORKSPACE_DIR=diagrams/structurizr-test
 ```
 
 Для обязательной проверки перед слиянием настройте защиту `main` в GitHub:
-добавьте status check `diagrams` и требование review тимлида.
+добавьте status check `documentation` и требование review тимлида.
+Если ранее был настроен check `diagrams`, замените его: этот job больше не существует.
