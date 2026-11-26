@@ -9,6 +9,7 @@ workspace "Intelligent Delay Forecasting — team demo" "Тестовая общ
             !include model/predictor.dsl
             !include model/data.dsl
             !include model/rag.dsl
+            !include model/regulations.dsl
         }
 
         !include shared/relationships.dsl
@@ -22,6 +23,7 @@ workspace "Intelligent Delay Forecasting — team demo" "Тестовая общ
         !include views/predictor.dsl
         !include views/data.dsl
         !include views/rag.dsl
+        !include views/regulations.dsl
         !include shared/styles.dsl
     }
 }
